@@ -4,6 +4,8 @@ app.use(express.json())
 
 app.use('/categories',require('./routes/categoryRoute'))
 app.use(`/products`,require('./routes/productRoute'))
+app.use('/orders',require('./routes/orderRoute'))
+app.use(`/orders_products`,require('./routes/productRoute'))
 
 
 app.listen(3000, () => console.log('Server started on port 3000'));

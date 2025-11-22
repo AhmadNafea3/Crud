@@ -1,7 +1,7 @@
-exports.getAllOrder = async (req, res) => {
+exports.getAllOrderProduct = async (req, res) => {
   try {
     const result = await database.pool.query(`
-    SELECT * FROM orders;
+    SELECT * FROM orders_products;
     `);
 
     return res.status(200).json(result.rows);
@@ -10,16 +10,18 @@ exports.getAllOrder = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 }
-exports.createOrders =async (req,res) =>{
+exports.createOrders_product =async (req,res) =>{
     try{
         
 const result =await database.pool.query({
     text:`
-    INSERT INTO orders (id,total)
-    VALUES ($1,$2) 
+    INSERT INTO orders_products (id,product_id,order_id)
+    VALUES ($1,$2,$3) 
     RETURNING *`,
     values:[req.body.id,
-        req.body.total
+        req.body.product_id,
+        req.body.order_id
+
     ]
     
 })
@@ -30,10 +32,10 @@ const result =await database.pool.query({
     }
 }
 
-exports.updateOrder = async(req,res)=>{
+exports.updateOrder_product = async(req,res)=>{
 try{
 const result =await database.pool.query({
-text:`UPDATE orders SET product_id=$2,order_id=$3
+text:`UPDATE orders_products SET product_id=$2,order_id=$3
 WHERE id=$1
 RETURNING *`,
 values:[req.params.id,
@@ -42,7 +44,7 @@ req.body.order_id]
 
 })
 if(result.rowCount ==0){
-    return res.status(404).json({error:'order_product not found'})
+    return res.status(404).json({error:'order not found'})
 }
 return res.status(200).json(result.rows[0])
 }catch(error){ 
@@ -50,10 +52,10 @@ return res.status(200).json(result.rows[0])
 
 }
 }
-exports.deleteOrder =async (req,res) =>{
+exports.deleteOrder_product =async (req,res) =>{
     try{
 const result = await database.pool.query({
-    text:`DELETE FROM orders WHERE id=$1`,
+    text:`DELETE FROM orders_products WHERE id=$1`,
     values:[req.params.id]
 })
 if(result.rowCount ==0){
